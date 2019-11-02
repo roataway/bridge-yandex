@@ -1,0 +1,14 @@
+mqtt:
+    # check https://github.com/roataway/api-documentation to find out which host to use
+    host: localhost
+    port: 1883
+    username: ""
+    password: ""
+    topics:
+        - telemetry/route/+
+
+yandex:
+  # this URL is used for sending data to Yandex, via HTTP POST requests
+  url: http://extjams.maps.yandex.net/mtr_collect/1.x/
+  clid: some-unique-identifier-here
+  uuid: and-a-uuid-here

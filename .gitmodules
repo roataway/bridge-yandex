@@ -1,0 +1,4 @@
+[submodule "infrastructure-data"]
+	path = infrastructure-data
+	url = git@github.com:roataway/infrastructure-data.git
+	branch = master
