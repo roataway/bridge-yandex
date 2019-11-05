@@ -47,11 +47,16 @@ class Subscriber:
 
         log.info('Starting main loop')
         while True:
-            payload = self.form_payload()
-            response = self.publish_payload(payload)
-            if not response.ok:
-                log.warning('Negative response from Yandex: status=%s, reason=%s',
-                            response.status_code, response.reason)
+            try:
+                payload = self.form_payload()
+            except StopIteration:
+                # nothing to report to the server, all telemetry points are outdated
+                pass
+            else:
+                response = self.publish_payload(payload)
+                if not response.ok:
+                    log.warning('Negative response from Yandex: status=%s, reason=%s',
+                                response.status_code, response.reason)
             try:
                 sleep(c.FREQ_PUBLISH)
             except KeyboardInterrupt:
@@ -64,15 +69,23 @@ class Subscriber:
     def form_payload(self, compressed=True):
         """Produce a payload out of the existing telemetry, forming an XML that contains
         fresh telemetry points. Optionally, it can compress the payload with Gzip
-        :returns: bytes, payload"""
+        :returns: bytes, payload
+        :raises: StopIteration if no fresh telemetry points available"""
         head_xml = f"""<?xml version="1.0" encoding="utf-8"?><tracks clid="{self.config['yandex']['clid']}">"""
         tail = '</tracks>'.encode('utf-8')
         telemetry_chunks = b''
 
         now = datetime.utcnow()
+        reports = 0
         for tracker, meta in self.trackers.items():
             if (now - meta.timestamp).seconds < c.THRESHOLD_FRESH:
                 telemetry_chunks += meta.to_xml_track().encode('utf-8')
+                reports += 0
+
+        if not reports:
+            # we'll raise an exception and simply do nothing, waiting for another iteration,
+            # instead of sending an empty payload to the server
+            raise StopIteration('No fresh telemetry to report about')
 
         payload = bytes(head_xml.encode('utf-8') + telemetry_chunks + tail)
         if compressed:
