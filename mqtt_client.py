@@ -45,7 +45,7 @@ class MqttClient:
         if self.external_handler:
             try:
                 self.external_handler(client, userdata, msg)
-            except:
+            except:  # noqa: E722
                 # that's alright, we don't know what might go wrong ,
                 # so we really need a broad exception handler here
                 log.exception('An exception occured inside the handler')

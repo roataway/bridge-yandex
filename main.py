@@ -1,8 +1,7 @@
 import logging
 import sys
 import json
-from datetime import datetime, timedelta
-import csv
+from datetime import datetime
 from time import sleep
 import gzip
 
@@ -16,9 +15,11 @@ from mqtt_client import MqttClient
 
 log = logging.getLogger("briya")
 
+
 class NoFreshTelemetry(Exception):
     # this is raised when there is no fresh telemetry to report
     pass
+
 
 class Subscriber:
     def __init__(self, mqtt, config):
