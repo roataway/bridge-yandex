@@ -16,6 +16,9 @@ from mqtt_client import MqttClient
 
 log = logging.getLogger("briya")
 
+class NoFreshTelemetry(Exception):
+    # this is raised when there is no fresh telemetry to report
+    pass
 
 class Subscriber:
     def __init__(self, mqtt, config):
@@ -49,8 +52,9 @@ class Subscriber:
         while True:
             try:
                 payload = self.form_payload()
-            except StopIteration:
-                # nothing to report to the server, all telemetry points are outdated
+            except NoFreshTelemetry:
+                # nothing to report to the server, all telemetry points are outdated,
+                # so we just sleep and try again at the next iteration
                 pass
             else:
                 response = self.publish_payload(payload)
@@ -76,16 +80,14 @@ class Subscriber:
         telemetry_chunks = b''
 
         now = datetime.utcnow()
-        reports = 0
+        telemetry_chunks_count = 0
         for tracker, meta in self.trackers.items():
             if (now - meta.timestamp).seconds < c.THRESHOLD_FRESH:
                 telemetry_chunks += meta.to_xml_track().encode('utf-8')
-                reports += 0
+                telemetry_chunks_count += 1
 
-        if not reports:
-            # we'll raise an exception and simply do nothing, waiting for another iteration,
-            # instead of sending an empty payload to the server
-            raise StopIteration('No fresh telemetry to report about')
+        if not telemetry_chunks_count:
+            raise NoFreshTelemetry
 
         payload = bytes(head_xml.encode('utf-8') + telemetry_chunks + tail)
         if compressed:
