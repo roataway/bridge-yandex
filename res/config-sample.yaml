@@ -12,3 +12,7 @@ yandex:
   url: http://extjams.maps.yandex.net/mtr_collect/1.x/
   clid: some-unique-identifier-here
   uuid: and-a-uuid-here
+  # if True, payloads sent to Yandex will be gzip'ed; you might want to
+  # set it to False when troubleshooting, unless you don't even see the
+  # code, you see "blonde, brunette..."
+  compress: True

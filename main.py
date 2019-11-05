@@ -41,7 +41,7 @@ class Subscriber:
         self.unprovisioned_trackers = set()
 
         # this flag is used as a "once-place toggle" for the compression feature
-        self.compress = True
+        self.compress = self.config['yandex'].get('compress', True)
 
     def serve(self):
         """The main loop"""
