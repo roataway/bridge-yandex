@@ -6,7 +6,7 @@ QOS_ATLEAST_ONCE = 1
 QOS_MAYBE = 0
 
 FORMAT_TIME_UPSTREAM = '%Y-%m-%dT%H:%M:%SZ'  # used by opendata.dekart.com
-FORMAT_TIME_YANDEX = '%d%m%y:%H:%M:%S'  # expected by Yandex
+FORMAT_TIME_YANDEX = '%d%m%y:%H%M%S'  # expected by Yandex
 
 # send the data to Yandex every FREQ_PUBLISH seconds
 FREQ_PUBLISH = 20
