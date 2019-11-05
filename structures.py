@@ -12,7 +12,7 @@ class Tracker:
     latitude: float = None
     longitude: float = None
     # where it goes, North=0, West=270, South=180, East=90
-    direction: float = None
+    direction: int = None
     # usually numeric, this is the number written on the trolleybus, e.g. "3913",
     # but we have to assume the can contain non-digit characters
     board_name: str = None

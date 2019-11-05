@@ -136,7 +136,7 @@ class Subscriber:
         try:
             state = self.trackers[tracker_id]
         except KeyError:
-            vehicle = Tracker(data['latitude'], data['longitude'], data['direction'],
+            vehicle = Tracker(data['latitude'], data['longitude'], int(data['direction']),
                               data['board'], tracker_id, data['speed'],
                               datetime.utcnow(), data['route'],
                               self.yandex_trackers[tracker_id])
@@ -145,7 +145,7 @@ class Subscriber:
         else:
             state.latitude = data['latitude']
             state.longitude = data['longitude']
-            state.direction = data['direction']
+            state.direction = int(data['direction'])
             state.speed = data['speed']
             state.timestamp = datetime.strptime(data['timestamp'], c.FORMAT_TIME)
             # this shouldn't change often, but because we don't know exactly when it changes,
