@@ -16,3 +16,5 @@ yandex:
   # set it to False when troubleshooting, unless you don't even see the
   # code, you see "blonde, brunette..."
   compress: True
+  # if enabled, HTTP request and response headers will be logged
+  debugHttp: False

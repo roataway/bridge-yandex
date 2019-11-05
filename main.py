@@ -167,6 +167,11 @@ if __name__ == "__main__":
     log.info("Processing config from `%s`", config_path)
     config = load_from_file(config_path)
 
+    if config["yandex"].get('debugHttp', False):
+        log.info('Activating debug log for HTTP')
+        import http
+        http.client.HTTPConnection.debuglevel = 1
+
     mqtt_conf = config["mqtt"]
     mqtt = MqttClient(
         name="roatarest",
