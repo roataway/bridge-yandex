@@ -147,7 +147,7 @@ class Subscriber:
             state.longitude = data['longitude']
             state.direction = int(data['direction'])
             state.speed = data['speed']
-            state.timestamp = datetime.strptime(data['timestamp'], c.FORMAT_TIME)
+            state.timestamp = datetime.strptime(data['timestamp'], c.FORMAT_TIME_UPSTREAM)
             # this shouldn't change often, but because we don't know exactly when it changes,
             # it is easier to just update it all the time
             state.route = data['route']
