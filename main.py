@@ -40,6 +40,9 @@ class Subscriber:
         # be suppressed, to reduce clutter
         self.unprovisioned_trackers = set()
 
+        # this flag is used as a "once-place toggle" for the compression feature
+        self.compress = True
+
     def serve(self):
         """The main loop"""
         self.mqtt.set_external_handler(self.on_mqtt)
@@ -51,16 +54,21 @@ class Subscriber:
         log.info('Starting main loop')
         while True:
             try:
-                payload = self.form_payload()
+                payload = self.form_payload(compressed=self.compress)
             except NoFreshTelemetry:
                 # nothing to report to the server, all telemetry points are outdated,
                 # so we just sleep and try again at the next iteration
                 pass
             else:
-                response = self.publish_payload(payload)
+                response = self.publish_payload(payload, compressed=self.compress)
                 if not response.ok:
                     log.warning('Negative response from Yandex: status=%s, reason=%s',
                                 response.status_code, response.reason)
+                    if response.status_code == 400:
+                        # when they say the request is bad, log it, so we can share it
+                        # for troubleshooting purposes
+                        log.debug('Payload `%s`', payload)
+                        log.debug('Response `%s`', response.text)
             try:
                 sleep(c.FREQ_PUBLISH)
             except KeyboardInterrupt:
