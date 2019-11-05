@@ -110,7 +110,7 @@ class Subscriber:
         if compressed:
             headers = {'Content-Type': 'multipart/form-data'}
         else:
-            headers = {'Content-Type': 'application/octet-stream'}
+            headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 
         return requests.post(url=self.config['yandex']['url'], data=payload, headers=headers)
 
