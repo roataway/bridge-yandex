@@ -51,7 +51,7 @@ class Subscriber:
         log.info('Starting MQTT loop')
         self.mqtt.client.loop_start()
 
-        log.info('Starting main loop')
+        log.info('Starting main loop; compress=%s', self.compress)
         while True:
             try:
                 payload = self.form_payload(compressed=self.compress)
