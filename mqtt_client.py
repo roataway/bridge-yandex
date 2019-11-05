@@ -46,6 +46,8 @@ class MqttClient:
             try:
                 self.external_handler(client, userdata, msg)
             except:
+                # that's alright, we don't know what might go wrong ,
+                # so we really need a broad exception handler here
                 log.exception('An exception occured inside the handler')
         else:
             log.debug("MQTT IN %s %s", msg.topic, msg.payload)
