@@ -33,10 +33,12 @@ class Tracker:
     def to_xml_point(self):
         """Produce an XML string that represents a Point structure, defined by Yandex Maps API"""
         time = self.timestamp.strftime(c.FORMAT_TIME_YANDEX)
-        return f'<point latitude="{self.latitude}" longitude="{self.longitude}" avg_speed="{self.speed}" direction="{self.direction}" time="{time}"/>'
+        return f'<point latitude="{self.latitude}" longitude="{self.longitude}" ' \
+            f'avg_speed="{self.speed}" direction="{self.direction}" time="{time}"/>'
 
     def to_xml_track(self):
         """Produce an XML string that represents a Track structure, defined by Yandex Maps API"""
-        head = f'<track uuid="{self.ya_tracker_id}" category="s" route="{self.route_name}" vehicle_type="{self.ya_vehicle_type}">'
+        head = f'<track uuid="{self.ya_tracker_id}" category="s" route="{self.route_name}" ' \
+            f'vehicle_type="{self.ya_vehicle_type}">'
         tail = '</track>'
         return head + self.to_xml_point() + tail
