@@ -43,6 +43,9 @@ class MqttClient:
     def on_request(self, client, userdata, msg):
         """Invoked when a message is received on t_requests"""
         if self.external_handler:
-            self.external_handler(client, userdata, msg)
+            try:
+                self.external_handler(client, userdata, msg)
+            except:
+                log.exception('An exception occured inside the handler')
         else:
             log.debug("MQTT IN %s %s", msg.topic, msg.payload)
