@@ -52,6 +52,6 @@ class MqttClient:
                 # we'll log the problematic payload too, but only up to
                 # a certain length, to prevent log cluttering, in case
                 # someone managed to post an excessively long message.
-                log.debug('Problematic message: `%.500s`', msg.payload')
+                log.debug('Problematic message: `%.500s`', msg.payload)
         else:
             log.debug("MQTT IN %s %s", msg.topic, msg.payload)
