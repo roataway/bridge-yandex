@@ -1,4 +1,4 @@
-VERSION = "1.1.1"
+VERSION = "1.1.2"
 
 # MQTT quality of service
 QOS_EXACTLY_ONCE = 2

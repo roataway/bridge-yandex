@@ -49,5 +49,9 @@ class MqttClient:
                 # that's alright, we don't know what might go wrong ,
                 # so we really need a broad exception handler here
                 log.exception('An exception occured inside the handler')
+                # we'll log the problematic payload too, but only up to
+                # a certain length, to prevent log cluttering, in case
+                # someone managed to post an excessively long message.
+                log.debug('Problematic message: `%.500s`', msg.payload')
         else:
             log.debug("MQTT IN %s %s", msg.topic, msg.payload)
