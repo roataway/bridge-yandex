@@ -1,5 +1,6 @@
 import logging
 import sys
+import os
 import json
 from datetime import datetime
 from time import sleep
@@ -7,6 +8,7 @@ import gzip
 
 from reyaml import load_from_file
 import requests
+import fastjsonschema
 
 from helpers import load_yandex_tracker_ids
 from structures import Tracker
@@ -43,6 +45,11 @@ class Subscriber:
 
         # this flag is used as a "once-place toggle" for the compression feature
         self.compress = self.config['yandex'].get('compress', True)
+
+        # load the JSON schema and initialize the validator with it, for later use
+        schema_path = os.path.join('api-documentation', 'schema', 'routeTelemetry.json')
+        schema = json.loads(open(schema_path, 'r').read())
+        self.validate = fastjsonschema.compile(schema)
 
     def serve(self):
         """The main loop"""
@@ -119,9 +126,17 @@ class Subscriber:
         # log.debug('MQTT IN %s %i bytes `%s`', msg.topic, len(msg.payload), repr(msg.payload))
         try:
             data = json.loads(msg.payload)
-            # TODO use an actual JSON schema validator here?
-        except ValueError:
-            log.debug("Ignoring bad MQTT data %s", repr(msg.payload))
+            self.validate(data)
+
+            # additional check to ensure the timestamp is sane, for it to be valid
+            # it cannot be from the future
+            now = datetime.utcnow().date()
+            timestamp = datetime.strptime(data['timestamp'], c.FORMAT_TIME_UPSTREAM)
+            if timestamp > now:
+                raise ValueError('Telemetry from the future cannot be right')
+
+        except (ValueError, fastjsonschema.JsonSchemaException) as err:
+            log.debug("Ignoring bad MQTT data, err: `%s`, raw: %s", err, repr(msg.payload))
             return
 
         tracker_id = data['rtu_id']
@@ -139,7 +154,7 @@ class Subscriber:
         except KeyError:
             vehicle = Tracker(data['latitude'], data['longitude'], int(data['direction']),
                               data['board'], tracker_id, data['speed'],
-                              datetime.utcnow(), data['route'],
+                              now, data['route'],
                               self.yandex_trackers[tracker_id])
             self.trackers[tracker_id] = vehicle
 
@@ -148,7 +163,7 @@ class Subscriber:
             state.longitude = data['longitude']
             state.direction = int(data['direction'])
             state.speed = data['speed']
-            state.timestamp = datetime.strptime(data['timestamp'], c.FORMAT_TIME_UPSTREAM)
+            state.timestamp = timestamp
             # this shouldn't change often, but because we don't know exactly when it changes,
             # it is easier to just update it all the time
             state.route = data['route']
