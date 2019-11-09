@@ -130,7 +130,7 @@ class Subscriber:
 
             # additional check to ensure the timestamp is sane, for it to be valid
             # it cannot be from the future
-            now = datetime.utcnow().date()
+            now = datetime.utcnow()
             timestamp = datetime.strptime(data['timestamp'], c.FORMAT_TIME_UPSTREAM)
             if timestamp > now:
                 raise ValueError('Telemetry from the future cannot be right')
