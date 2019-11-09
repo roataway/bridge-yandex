@@ -2,7 +2,7 @@ import logging
 import sys
 import os
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from time import sleep
 import gzip
 
@@ -132,7 +132,7 @@ class Subscriber:
             # it cannot be from the future
             now = datetime.utcnow()
             timestamp = datetime.strptime(data['timestamp'], c.FORMAT_TIME_UPSTREAM)
-            if timestamp > now:
+            if timestamp > now + timedelta(seconds=c.DRIFT_TOLERANCE):
                 raise ValueError('Telemetry from the future cannot be right')
 
         except (ValueError, fastjsonschema.JsonSchemaException) as err:

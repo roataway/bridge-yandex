@@ -1,4 +1,4 @@
-VERSION = "1.1.2"
+VERSION = "1.1.3"
 
 # MQTT quality of service
 QOS_EXACTLY_ONCE = 2
@@ -17,3 +17,8 @@ FREQ_PUBLISH = 20
 THRESHOLD_FRESH = 30
 
 PATH_YANDEX_VEHICLES = 'res/yandex-vehicles.csv'
+
+# if the difference in time between the server and the telemetry is more than
+# this many seconds, we consider the telemetry to be wrong (it basically came
+# from the future, which should not be possible [to the best of our knwoledge])
+DRIFT_TOLERANCE = 10
