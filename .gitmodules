@@ -2,3 +2,7 @@
 	path = infrastructure-data
 	url = git@github.com:roataway/infrastructure-data.git
 	branch = master
+[submodule "api-documentation"]
+	path = api-documentation
+	url = https://github.com/roataway/api-documentation.git
+	branch = master

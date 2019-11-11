@@ -2,3 +2,4 @@ paho-mqtt==1.4.0
 requests==2.22.0
 reyaml==0.2.2
 dataclasses==0.6
+fastjsonschema==2.14.1
