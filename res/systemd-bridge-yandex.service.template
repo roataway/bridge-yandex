@@ -1,0 +1,20 @@
+# save this to /lib/systemd/system/bridge-yandex.service
+# run sudo systemctl enable bridge-yandex
+# run sudo systemctl start bridge-yandex
+
+[Unit]
+Description=opendata.dekart.com telemetry bridge for Yandex
+After=network-online.target
+
+# this assumes you run this under a user called `gps`, and the code is
+# located in /home/gps/bridge-yandex,
+# under a virtual environment called `venv-briya`
+[Service]
+WorkingDirectory=/home/gps/bridge-yandex
+ExecStart=/home/gps/bridge-yandex/venv-briya/bin/python main.py res/config-config-path.yaml
+User=gps
+Restart=always
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target
